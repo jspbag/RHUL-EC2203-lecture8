@@ -1,0 +1,257 @@
+---
+pagetitle: The multiple regression model II
+output: 
+  revealjs::revealjs_presentation:
+    incremental: false
+    theme: solarized
+    self_contained: false
+    # reveal_plugins: ["menu","notes","chalkboard"]
+    reveal_plugins: ["menu"]
+    highlight: pygments
+    center: true
+    transition: none
+    background_transition: none 
+    reveal_options:
+      # chalkboard:
+      #   theme: whiteboard
+      #   toggleNotesButton: true
+      #   toggleChalkboardButton: true
+      menu:
+        numbers: true
+      slideNumber: true
+      previewLinks: false
+    fig_caption: true
+    pandoc_args:
+    - --indented-code-classes
+    - lineNumbers
+    css: mystyle.css
+    
+--- 
+
+<section>
+
+<h1>The multiple regression model II</h1>
+
+Based on Stock and Watson, ch. 6
+
+<br>
+
+<h2>[Jesper Bagger](mailto:jesper.bagger@rhul.ac.uk)</h2>
+
+<h3>EC2203 | Royal Holloway | 2020/21</h3>
+
+</section>
+
+
+```{r results='asis', echo=FALSE, include=FALSE}
+library(AER) # load Applied Econometrics with R library
+library(parameters) # Load parameters library for robust SE computation
+data(CASchools) # Load CASchools data
+# Generate a couple of useful variables
+CASchools$STR <- CASchools$students/CASchools$teachers  # Student-teacher ratio
+CASchools$Score <- (CASchools$read + CASchools$math)/2  # Student test score
+```
+
+# Outline
+
+1. Dummy variables
+
+1. Multicollinearity and the dummy variable trap
+
+2. Causal inference in the multiple regression model 
+
+3. Imperfect multicollinearity
+
+# Dummy variables
+
+## Dummy variables
+
+- A binary variable is also called an indicator variable or a **dummy variable**
+
+- In the test score-class size example, we may consider a dummy variable for a district being rural:
+
+  $$Rural_i = \left\{ 
+  \begin{array}{ll}
+  1 & \text{if district } i \text{ is rural} \\
+  0 & \text{otherwise}
+  \end{array}
+  \right.$$
+
+- Regression coefficients on dummy variables have a particular interpretation
+
+## Dummy regressors
+
+- Consider the test score-class size regression augmented with a rural-dummy
+
+  $$Score_i = \beta_0 + \beta_1 STR_i + \beta_2 Rural_i + u_i$$
+  
+  such that
+
+  \begin{multline*}
+  \mathrm{E}(Score_i|STR_i,Rural_i) \\
+  = \left\{ 
+  \begin{array}{ll}
+  \beta_0 + \beta_1 STR_i + \beta_2 & \text{if district } i \text{ is rural} \\
+  \beta_0 + \beta_1 STR_i & \text{otherwise}
+  \end{array}
+  \right.
+  \end{multline*}
+  
+- Hence, $\beta_2$, the coefficient on the $Rural$-dummy, measures the difference in average test scores between a rural district and a non-rural district, holding $STR$ constant
+
+# Multicollinearity and the dummy variable trap
+
+## Perfect multicollinearity
+
+- Regressors exhibit **perfect multicollinearity** if one regressor is a perfect linear function of the other regressors; so, $X_{1i}$ and $X_{2i}$ are perfectly multicollinear if
+  
+  $$X_{1i} = \alpha_0 + \alpha_1 X_{2i}$$
+
+- When $X_{1i}$ and $X_{2i}$ are multicollinear we cannot estimate both $\beta_1$ and $\beta_2$, the partial effects of $X_1$ and $X_2$ on $Y$
+
+  Indeed, when $X_{1i} = \alpha_0 + \alpha_1 X_{2i}$, it is impossible to vary $X_1$ and at the same time hold $X_2$ constant, and *vice versa*.
+
+## The dummy variable trap
+
+- In addition to the $Rural$-dummy, construct $Suburban$- and $Urban$-dummies: 
+
+  $$Suburban_i = \left\{ 
+  \begin{array}{ll}
+  1 & \text{if district } i \text{ is suburban} \\
+  0 & \text{otherwise}
+  \end{array}
+  \right.$$
+
+  $$Urban_i = \left\{ 
+  \begin{array}{ll}
+  1 & \text{if district } i \text{ is urban} \\
+  0 & \text{otherwise}
+  \end{array}
+  \right.$$
+  
+- Consider the test score-class size regression augmented with rural-, suburban-, and urban-dummies
+
+  \begin{multline*}
+  Score_i = \beta_0 + \beta_1 STR_i + \beta_2 Rural_i \\
+  + \beta_3 Suburban_i  + \beta_4 Urban_i + u_i
+  \end{multline*}
+
+## The dummy variable trap
+
+<!-- - Consider the test score-class size regression augmented with rural-, suburban-, and urban-dummies -->
+
+<!--   \begin{multline*} -->
+<!--   Score_i = \beta_0 + \beta_1 STR_i + \beta_2 Rural_i \\ -->
+<!--   + \beta_3 Suburban_i  + \beta_4 Urban_i + u_i -->
+<!--   \end{multline*} -->
+
+- Useful to consider the intercept as the coefficient on the **constant regressor** $X_{0i} =1$ for $i = 1,\ldots,n$: 
+
+  \begin{multline*}
+  Score_i = \beta_0 X_{0i} + \beta_1 STR_i + \beta_2 Rural_i \\
+  + \beta_3 Suburban_i  + \beta_4 Urban_i + u_i
+  \end{multline*}
+  
+- We have fallen into the **dummy variable trap**: $X_{0i}$, $Rural_i$, $Suburban_i$, and $Urban_i$ are **perfectly multicollinear**
+
+  $$Rural_i + Suburban_i + Urban_i = X_{0i} = 1$$
+  
+  for $i = 1,\ldots,n$
+  
+- We cannot compute the OLS estimator if regressors are perfectly multicollinear
+
+## The dummy variable trap
+
+- With $G$ binary variables, if each obs. fall in one and only one category and if regression has an intercept, exclude one of $G$ binary variables to avoid perfect multicollinearity
+
+- For example, run instead the regression
+
+  \begin{multline*}
+  Score_i = \beta_0 X_{0i} + \beta_1 STR_i + \beta_2 Rural_i \\
+  + \beta_3 Suburban_i + u_i
+  \end{multline*}
+  
+- Interpretation of $\beta_2$: the average test score difference b/w rural and urban districts, holding $STR$ fixed
+
+- Coefficients on dummy variables are conditional mean differences **relative to omitted dummy**
+
+# Causal inference in the multiple regression model
+
+## Estimating causal effects in multiple regression
+
+<div class="box">
+$$Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + u_i; \quad i=1,\ldots,n$$
+
+where $\beta_1$ and $\beta_2$ are causal effects. The OLS estimators $\hat{\beta}_1$ and $\hat{\beta}_1$ are consistent and asymptotically normal estimators of $\beta_1$ and $\beta_2$ if
+
+1. Zero conditional mean: $\mathrm{E}(u_i|X_{1i},X_{2i}) = 0$
+
+2. $(X_{1i},X_{2i},Y_i;i=1,\ldots,n)$ is an i.i.d. sample
+
+3. $X_{1i}$, $X_{2i}$ and $Y_i$ have nonzero finite 4th moments
+
+4. There is no perfect multicollinearity
+
+</div>
+
+## The zero conditional mean assumption
+
+<div class="box">
+$$\mathrm{E}(u_i|X_{1i},X_{2i}) = 0$$
+</div>
+
+- Different $X_{\ell i}$-values not associated w/ systematic changes in mean $u_i$: $X_{\ell i}$ is **as-if randomly assigned**, $\ell=1,2$
+
+- Zero conditional mean implies zero covariance:
+
+  $$\mathrm{E}(u_i|X_{1i},X_{2i}) = 0 \Rightarrow \mathrm{Cov}(u_i,X_{\ell i})  = 0, \,\, \ell=1,2$$
+  
+- Recall that omitted variables are not permitted under the zero conditional mean assumption
+
+- The zero conditional mean assumption does not restrict the covariance between regressors $X_{1i}$ and $X_{2i}$
+
+## Control variables and the conditional mean independence assumption
+
+- The pre-recorded lecture lays out a different configuration of assumptions that also allows consistent estimation of causal effects (of a subset) of regressors
+
+- Relies on **control variables** and a **conditional mean independence assumption**
+
+- A control variable is **included only to avoid omitted variable bias** to the estimated causal effect of interest
+
+  We don't care if the estimated coefficients on the control variables are biased estimates of their causal effects
+
+
+# Imperfect multicollinearity
+
+## Imperfect multicollinearity
+
+- **Imperfect multicollinearity** arises if a linear function of the regressors is highly, but not perfectly, correlated with another regressor
+
+- The OLS estimator remains consistent, unbiased, and asymptotically normal when regressors are imperfectly multicollinear
+
+- Imperfect multicollinearity among regressors does inflate the variance of the OLS estimator
+
+## Imperfect multicollinearity and the variance of the OLS estimator
+
+- Suppose $u_i$ is homoskedastic, with $\mathrm{var}(u_i) = \sigma^2$,
+
+  <div class="box">
+  $$\mathrm{var}(\hat{\beta}_1|X_{1i},X_{2i}; i=1,\ldots,n) = \frac{\sigma^2}{TSS_{X_1}(1-R^2_{X_1})}$$
+  </div>
+
+- If $X_1$ and $X_2$ are close to perfectly multicollinear, then $R^2_{X_1} \approx 1$, and the variance of $\hat{\beta}_1$ grows very large.
+
+# Summary
+
+## Summary
+
+- Regressors exhibit perfect multicollinearity if one regressor is a perfect linear function of the other regressors
+
+- The dummy variable trap is a common source of perfect multicollinearity
+
+- Under the least squares assumptions for causal inference, OLS in the multiple regression model is a consistent estimator of causal effects
+
+- Imperfect multicollinearity inflate standard errors of estimated coefficients
+
+
+
