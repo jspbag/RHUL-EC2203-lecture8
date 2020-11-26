@@ -54,15 +54,23 @@ CASchools$Score <- (CASchools$read + CASchools$math)/2  # Student test score
 
 # Outline
 
-1. Dummy variables
-
 1. Multicollinearity and the dummy variable trap
 
 2. Causal inference in the multiple regression model 
 
 3. Imperfect multicollinearity
 
-# Dummy variables
+# Multicollinearity and the dummy variable trap
+
+## Perfect multicollinearity
+
+- Regressors exhibit **perfect multicollinearity** if one regressor is a perfect linear function of the other regressors; so, $X_{1i}$ and $X_{2i}$ are perfectly multicollinear if
+  
+  $$X_{1i} = \alpha_0 + \alpha_1 X_{2i}$$
+
+- When $X_{1i}$ and $X_{2i}$ are multicollinear we cannot estimate both $\beta_1$ and $\beta_2$, the partial effects of $X_1$ and $X_2$ on $Y$
+
+  Indeed, when $X_{1i} = \alpha_0 + \alpha_1 X_{2i}$, it is impossible to vary $X_1$ and at the same time hold $X_2$ constant, and *vice versa*.
 
 ## Dummy variables
 
@@ -97,19 +105,7 @@ CASchools$Score <- (CASchools$read + CASchools$math)/2  # Student test score
   \right.
   \end{multline*}
   
-- Hence, $\beta_2$, the coefficient on the $Rural$-dummy, measures the difference in average test scores between a rural district and a non-rural district, holding $STR$ constant
-
-# Multicollinearity and the dummy variable trap
-
-## Perfect multicollinearity
-
-- Regressors exhibit **perfect multicollinearity** if one regressor is a perfect linear function of the other regressors; so, $X_{1i}$ and $X_{2i}$ are perfectly multicollinear if
-  
-  $$X_{1i} = \alpha_0 + \alpha_1 X_{2i}$$
-
-- When $X_{1i}$ and $X_{2i}$ are multicollinear we cannot estimate both $\beta_1$ and $\beta_2$, the partial effects of $X_1$ and $X_2$ on $Y$
-
-  Indeed, when $X_{1i} = \alpha_0 + \alpha_1 X_{2i}$, it is impossible to vary $X_1$ and at the same time hold $X_2$ constant, and *vice versa*.
+- $\beta_2$ measures the difference in average test scores between a rural district and a non-rural district, holding $STR$ constant
 
 ## The dummy variable trap
 
@@ -152,13 +148,13 @@ CASchools$Score <- (CASchools$read + CASchools$math)/2  # Student test score
   + \beta_3 Suburban_i  + \beta_4 Urban_i + u_i
   \end{multline*}
   
-- We have fallen into the **dummy variable trap**: $X_{0i}$, $Rural_i$, $Suburban_i$, and $Urban_i$ are **perfectly multicollinear**
+- **Dummy variable trap**: $X_{0i}$, $Rural_i$, $Suburban_i$, and $Urban_i$ are **perfectly multicollinear**
 
   $$Rural_i + Suburban_i + Urban_i = X_{0i} = 1$$
   
   for $i = 1,\ldots,n$
   
-- We cannot compute the OLS estimator if regressors are perfectly multicollinear
+- Can't compute OLS estimator w/ perfectly multicollinearity
 
 ## The dummy variable trap
 
@@ -200,7 +196,7 @@ where $\beta_1$ and $\beta_2$ are causal effects. The OLS estimators $\hat{\beta
 $$\mathrm{E}(u_i|X_{1i},X_{2i}) = 0$$
 </div>
 
-- Different $X_{\ell i}$-values not associated w/ systematic changes in mean $u_i$: $X_{\ell i}$ is **as-if randomly assigned**, $\ell=1,2$
+- Different $X_{\ell i}$-values not associated w/ changes in mean $u_i$: $X_{\ell i}$ is **as-if randomly assigned**, $\ell=1,2$
 
 - Zero conditional mean implies zero covariance:
 

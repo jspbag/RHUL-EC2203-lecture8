@@ -468,12 +468,19 @@ EC2203 | Royal Holloway | 2020/21
 </section>
 </section>
 <section id="outline" class="title-slide slide level1"><h1>Outline</h1><ol type="1">
-<li><p>Dummy variables</p></li>
 <li><p>Multicollinearity and the dummy variable trap</p></li>
 <li><p>Causal inference in the multiple regression model</p></li>
 <li><p>Imperfect multicollinearity</p></li>
 </ol></section>
-<section><section id="dummy-variables" class="title-slide slide level1"><h1>Dummy variables</h1></section><section id="dummy-variables-1" class="slide level2">
+<section><section id="multicollinearity-and-the-dummy-variable-trap" class="title-slide slide level1"><h1>Multicollinearity and the dummy variable trap</h1></section><section id="perfect-multicollinearity" class="slide level2">
+<h2>Perfect multicollinearity</h2>
+<ul>
+<li><p>Regressors exhibit <strong>perfect multicollinearity</strong> if one regressor is a perfect linear function of the other regressors; so, <span class="math inline">\(X_{1i}\)</span> and <span class="math inline">\(X_{2i}\)</span> are perfectly multicollinear if</p>
+<p><span class="math display">\[X_{1i} = \alpha_0 + \alpha_1 X_{2i}\]</span></p></li>
+<li><p>When <span class="math inline">\(X_{1i}\)</span> and <span class="math inline">\(X_{2i}\)</span> are multicollinear we cannot estimate both <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>, the partial effects of <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> on <span class="math inline">\(Y\)</span></p>
+<p>Indeed, when <span class="math inline">\(X_{1i} = \alpha_0 + \alpha_1 X_{2i}\)</span>, it is impossible to vary <span class="math inline">\(X_1\)</span> and at the same time hold <span class="math inline">\(X_2\)</span> constant, and <em>vice versa</em>.</p></li>
+</ul>
+</section><section id="dummy-variables" class="slide level2">
 <h2>Dummy variables</h2>
 <ul>
 <li><p>A binary variable is also called an indicator variable or a <strong>dummy variable</strong></p></li>
@@ -501,16 +508,7 @@ EC2203 | Royal Holloway | 2020/21
 \end{array}
 \right.
 \end{multline*}\]</span></p></li>
-<li><p>Hence, <span class="math inline">\(\beta_2\)</span>, the coefficient on the <span class="math inline">\(Rural\)</span>-dummy, measures the difference in average test scores between a rural district and a non-rural district, holding <span class="math inline">\(STR\)</span> constant</p></li>
-</ul>
-</section></section>
-<section><section id="multicollinearity-and-the-dummy-variable-trap" class="title-slide slide level1"><h1>Multicollinearity and the dummy variable trap</h1></section><section id="perfect-multicollinearity" class="slide level2">
-<h2>Perfect multicollinearity</h2>
-<ul>
-<li><p>Regressors exhibit <strong>perfect multicollinearity</strong> if one regressor is a perfect linear function of the other regressors; so, <span class="math inline">\(X_{1i}\)</span> and <span class="math inline">\(X_{2i}\)</span> are perfectly multicollinear if</p>
-<p><span class="math display">\[X_{1i} = \alpha_0 + \alpha_1 X_{2i}\]</span></p></li>
-<li><p>When <span class="math inline">\(X_{1i}\)</span> and <span class="math inline">\(X_{2i}\)</span> are multicollinear we cannot estimate both <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>, the partial effects of <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> on <span class="math inline">\(Y\)</span></p>
-<p>Indeed, when <span class="math inline">\(X_{1i} = \alpha_0 + \alpha_1 X_{2i}\)</span>, it is impossible to vary <span class="math inline">\(X_1\)</span> and at the same time hold <span class="math inline">\(X_2\)</span> constant, and <em>vice versa</em>.</p></li>
+<li><p><span class="math inline">\(\beta_2\)</span> measures the difference in average test scores between a rural district and a non-rural district, holding <span class="math inline">\(STR\)</span> constant</p></li>
 </ul>
 </section><section id="the-dummy-variable-trap" class="slide level2">
 <h2>The dummy variable trap</h2>
@@ -547,10 +545,10 @@ Score_i = \beta_0 + \beta_1 STR_i + \beta_2 Rural_i \\
 Score_i = \beta_0 X_{0i} + \beta_1 STR_i + \beta_2 Rural_i \\
 + \beta_3 Suburban_i  + \beta_4 Urban_i + u_i
 \end{multline*}\]</span></p></li>
-<li><p>We have fallen into the <strong>dummy variable trap</strong>: <span class="math inline">\(X_{0i}\)</span>, <span class="math inline">\(Rural_i\)</span>, <span class="math inline">\(Suburban_i\)</span>, and <span class="math inline">\(Urban_i\)</span> are <strong>perfectly multicollinear</strong></p>
+<li><p><strong>Dummy variable trap</strong>: <span class="math inline">\(X_{0i}\)</span>, <span class="math inline">\(Rural_i\)</span>, <span class="math inline">\(Suburban_i\)</span>, and <span class="math inline">\(Urban_i\)</span> are <strong>perfectly multicollinear</strong></p>
 <p><span class="math display">\[Rural_i + Suburban_i + Urban_i = X_{0i} = 1\]</span></p>
 <p>for <span class="math inline">\(i = 1,\ldots,n\)</span></p></li>
-<li><p>We cannot compute the OLS estimator if regressors are perfectly multicollinear</p></li>
+<li><p>Can’t compute OLS estimator w/ perfectly multicollinearity</p></li>
 </ul>
 </section><section id="the-dummy-variable-trap-2" class="slide level2">
 <h2>The dummy variable trap</h2>
@@ -583,7 +581,7 @@ Score_i = \beta_0 X_{0i} + \beta_1 STR_i + \beta_2 Rural_i \\
 <p><span class="math display">\[\mathrm{E}(u_i|X_{1i},X_{2i}) = 0\]</span></p>
 </div>
 <ul>
-<li><p>Different <span class="math inline">\(X_{\ell i}\)</span>-values not associated w/ systematic changes in mean <span class="math inline">\(u_i\)</span>: <span class="math inline">\(X_{\ell i}\)</span> is <strong>as-if randomly assigned</strong>, <span class="math inline">\(\ell=1,2\)</span></p></li>
+<li><p>Different <span class="math inline">\(X_{\ell i}\)</span>-values not associated w/ changes in mean <span class="math inline">\(u_i\)</span>: <span class="math inline">\(X_{\ell i}\)</span> is <strong>as-if randomly assigned</strong>, <span class="math inline">\(\ell=1,2\)</span></p></li>
 <li><p>Zero conditional mean implies zero covariance:</p>
 <p><span class="math display">\[\mathrm{E}(u_i|X_{1i},X_{2i}) = 0 \Rightarrow \mathrm{Cov}(u_i,X_{\ell i})  = 0, \,\, \ell=1,2\]</span></p></li>
 <li><p>Recall that omitted variables are not permitted under the zero conditional mean assumption</p></li>
