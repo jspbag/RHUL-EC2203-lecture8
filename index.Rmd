@@ -43,15 +43,6 @@ Based on Stock and Watson, ch. 6
 </section>
 
 
-```{r results='asis', echo=FALSE, include=FALSE}
-library(AER) # load Applied Econometrics with R library
-library(parameters) # Load parameters library for robust SE computation
-data(CASchools) # Load CASchools data
-# Generate a couple of useful variables
-CASchools$STR <- CASchools$students/CASchools$teachers  # Student-teacher ratio
-CASchools$Score <- (CASchools$read + CASchools$math)/2  # Student test score
-```
-
 # Outline
 
 1. Multicollinearity and the dummy variable trap
